@@ -9,29 +9,30 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interf
 
 contract FundMe{
     mapping ( address => uint256) public addressToAmountFunded;
-    uint256 public minimumUSD = 1 * 10 ** 18; // 1 USD
-    uint256 public constant FUNDING_GOAL_IN_USD = 50 * 10 ** 18; // 50 USD
+    uint256 public minimumUSD = 100 * 10 ** 18; // 100 USD
+    uint256 public constant FUNDING_GOAL_IN_USD = 500 * 10 ** 18; // 500 USD
     uint256 public FUNDING_DEADLINE;
     uint256 public FUNDING_TIMESTAMP;
-    address owner;
+    address public owner;
     address ERC20addr;
-    AggregatorV3Interface internal dataFeed;
+    AggregatorV3Interface public dataFeed;
     bool public fundingComplete;
 
-    constructor(uint256 _FUNDING_DEADLINE){
+    constructor(uint256 _FUNDING_DEADLINE, address DATAFEED){
         owner = msg.sender;
         FUNDING_DEADLINE = _FUNDING_DEADLINE;
         FUNDING_TIMESTAMP = block.timestamp;
-        dataFeed = AggregatorV3Interface(0x694AA1769357215DE4FAC081bf1f309aDC325306);
+        //web3 dataFeed address : 0x694AA1769357215DE4FAC081bf1f309aDC325306
+        dataFeed = AggregatorV3Interface(DATAFEED);
 
     }
     
     modifier onlyowner(){
-        require(msg.sender == owner);
+        require(msg.sender == owner,"you not is owner");
         _;
     }
     modifier afterDeadline() {
-        require(block.timestamp > FUNDING_TIMESTAMP + FUNDING_DEADLINE);
+        require(block.timestamp > FUNDING_TIMESTAMP + FUNDING_DEADLINE,"window is open");
         _;
     }
     
@@ -58,14 +59,14 @@ contract FundMe{
         addressToAmountFunded[msg.sender] += msg.value;
     }
     function getFund() public afterDeadline onlyowner{
-        require(convertEthToUsd(address(this).balance) >= FUNDING_GOAL_IN_USD);
+        require(convertEthToUsd(address(this).balance) >= FUNDING_GOAL_IN_USD,"the value less then fund goal");
         bool success;
         (success,)=payable (msg.sender).call{value:address(this).balance}("");
        //payable (msg.sender).transfer(address(this).balance);
         fundingComplete = true;
     }
     function getRefund() public afterDeadline{
-        require(convertEthToUsd(address(this).balance) < FUNDING_GOAL_IN_USD);
+        require(convertEthToUsd(address(this).balance) < FUNDING_GOAL_IN_USD,"the value not to you");
         bool success;
         (success,)= payable(msg.sender).call{value:addressToAmountFunded[msg.sender]}("");
         //payable (msg.sender).transfer(addressToAmountFunded[msg.sender]);
