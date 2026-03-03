@@ -17,6 +17,8 @@ contract FundMe{
     address ERC20addr;
     AggregatorV3Interface public dataFeed;
     bool public fundingComplete;
+    event FundWithdrawByOwner(uint256);
+    event ReFundByuser(address, uint256);
 
     constructor(uint256 _FUNDING_DEADLINE, address DATAFEED){
         owner = msg.sender;
@@ -61,16 +63,23 @@ contract FundMe{
     function getFund() public afterDeadline onlyowner{
         require(convertEthToUsd(address(this).balance) >= FUNDING_GOAL_IN_USD,"the value less then fund goal");
         bool success;
-        (success,)=payable (msg.sender).call{value:address(this).balance}("");
+        uint256 balance = address(this).balance;
+        (success,)=payable (msg.sender).call{value:balance}("");
        //payable (msg.sender).transfer(address(this).balance);
         fundingComplete = true;
+        //emit event
+        emit FundWithdrawByOwner(balance);
     }
     function getRefund() public afterDeadline{
         require(convertEthToUsd(address(this).balance) < FUNDING_GOAL_IN_USD,"the value not to you");
+        require(addressToAmountFunded[msg.sender] != 0, "there is no fund for you");
         bool success;
-        (success,)= payable(msg.sender).call{value:addressToAmountFunded[msg.sender]}("");
+        uint256 balance = addressToAmountFunded[msg.sender];
+        (success,)= payable(msg.sender).call{value:balance}("");
         //payable (msg.sender).transfer(addressToAmountFunded[msg.sender]);
         addressToAmountFunded[msg.sender] = 0 ;
+        //emit event
+        emit ReFundByuser(msg.sender, balance);
     }
 
     function setowner(address newOwner) public onlyowner{

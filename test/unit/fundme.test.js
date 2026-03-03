@@ -62,7 +62,7 @@ describe("test fundme contract",async function(){
 
     //unit test for getFund
 
-    it("not owner, window close ,value grater than target,refund failed",async function(){
+    it("not owner, window close ,value grater than target,getfund failed",async function(){
         
         await fundMe.fund({value: ethers.parseEther("1")})
         await helpers.time.increase(181)
@@ -71,5 +71,84 @@ describe("test fundme contract",async function(){
             .to.be.revertedWith("you not is owner")
 
     })
+
+    it("owner, window open ,value grater than target,getfund failed",async function(){
+        
+        await fundMe.fund({value: ethers.parseEther("1")})
+        await helpers.time.increase(18)
+        await helpers.mine()
+        await expect(fundMe.getFund())
+            .to.be.revertedWith("window is open")
+
+    })
+
+
+    it("owner, window closed ,target not reached,getfund failed",async function(){
+        
+        await fundMe.fund({value: ethers.parseEther("0.1")})
+        await helpers.time.increase(181)
+        await helpers.mine()
+        await expect(fundMe.getFund())
+            .to.be.revertedWith("the value less then fund goal")
+
+    })
+
+    it("owner, window closed ,value grater than target,getfund success",async function(){
+        
+        await fundMe.fund({value: ethers.parseEther("1")})
+        await fundMeSecondAccount.fund({value: ethers.parseEther("1")})
+        await helpers.time.increase(190)
+        await helpers.mine()
+        await expect(fundMe.getFund())
+            .to.emit(fundMe,"FundWithdrawByOwner")
+            .withArgs(ethers.parseEther("2"))
+
+    })
+   
     
+    //unit test for reFund
+
+    it("window close ,value grater than target,refund failed",async function(){
+        
+        await fundMe.fund({value: ethers.parseEther("1")})
+        await helpers.time.increase(181)
+        await helpers.mine()
+        await expect(fundMe.getRefund())
+            .to.be.revertedWith("the value not to you")
+
+    })
+
+    it("window open ,target not reached,refund failed",async function(){
+        
+        await fundMe.fund({value: ethers.parseEther("0.1")})
+        await helpers.time.increase(18)
+        await helpers.mine()
+        await expect(fundMe.getRefund())
+            .to.be.revertedWith("window is open")
+
+    })
+
+
+    it("window closed ,target not reached,funder not has balance,refund failed",async function(){
+        
+        await fundMe.fund({value: ethers.parseEther("0.1")})
+        await helpers.time.increase(181)
+        await helpers.mine()
+        await fundMe.getRefund()
+        await expect(fundMe.getRefund())
+            .to.be.revertedWith("there is no fund for you")
+
+    })
+
+    it("window closed ,target not reached,funder not has balance,refund success",async function(){
+        
+        await fundMe.fund({value: ethers.parseEther("0.1")})
+        await fundMeSecondAccount.fund({value: ethers.parseEther("0.05")})
+        await helpers.time.increase(190)
+        await helpers.mine()
+        await expect(fundMe.getRefund())
+            .to.emit(fundMe,"ReFundByuser")
+            .withArgs(firstAccount,ethers.parseEther("0.1"))
+
+    })
 })
