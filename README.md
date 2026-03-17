@@ -20,6 +20,7 @@ User（用户） → FundMe Contract → mapping(address => amount) → mint FT
 
 ## 🔑 核心合约设计
 1️⃣ 资金记录机制
+
 solidity
    mapping(address => uint256) public addressToAmountFunded;
 设计原因：
