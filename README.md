@@ -18,10 +18,9 @@ User（用户） → FundMe Contract → mapping(address => amount) → mint FT
              Chainlink Oracle
 
 ## 🔑 核心合约设计
-
 1️⃣ 资金记录机制
-```solidity
-mapping(address => uint256) public addressToAmountFunded;
+solidity
+   mapping(address => uint256) public addressToAmountFunded;
 设计原因：
   支持 O(1) 时间复杂度查询用户资金
   相比数组遍历更加节省 Gas
@@ -54,8 +53,9 @@ Hardhat
 Ethers.js
 Chainlink
 
-
 ## 📌 项目总结
 使用 mapping 高效管理用户资金
 集成 Chainlink 实现真实价格校验
 构建高覆盖率测试体系（接近生产级）
+
+
