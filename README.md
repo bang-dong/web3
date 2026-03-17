@@ -14,7 +14,8 @@
             Contract Owner
                      ↑
 User（用户） → FundMe Contract → mapping(address => amount) → mint FT
-                      ↓
+
+                     ↓
              Chainlink Oracle
 
 ## 🔑 核心合约设计
