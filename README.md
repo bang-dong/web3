@@ -10,9 +10,9 @@
 - 提供 Gas 优化的 withdraw 实现
 - 完整单元测试覆盖
 
-## 🏗 系统架构
-              Contract Owner
-                    ↑
+## 🏗 系统架构  
+             Contract Owner
+                     ↑
 User（用户） → FundMe Contract → mapping(address => amount) → mint FT
                       ↓
              Chainlink Oracle
@@ -24,16 +24,19 @@ solidity
 设计原因：
   支持 O(1) 时间复杂度查询用户资金
   相比数组遍历更加节省 Gas
+  
 2️⃣ 最小出资限制（USD）
 集成 Chainlink Price Feed
 实现 ETH → USD 实时转换
 设计目的：
   避免 ETH 价格波动导致的资金不足问题
   提升协议稳定性
+
 🔒 安全性设计
 使用 onlyOwner 限制提现权限
 输入参数校验（最小出资）
 避免不必要的外部调用
+
 🧪 测试
 测试框架：
   Hardhat
@@ -47,6 +50,7 @@ solidity
   多用户出资
   owner 提现
   非 owner 提现失败
+  
 🛠 技术栈
 Solidity
 Hardhat
