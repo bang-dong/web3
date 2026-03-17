@@ -11,10 +11,9 @@
 - 完整单元测试覆盖
 
 ## 🏗 系统架构  
-             Contract Owner
+            Contract Owner
                      ↑
 User（用户） → FundMe Contract → mapping(address => amount) → mint FT
-
                       ↓
              Chainlink Oracle
 
@@ -22,17 +21,17 @@ User（用户） → FundMe Contract → mapping(address => amount) → mint FT
 1️⃣ 资金记录机制
 
 solidity
-   mapping(address => uint256) public addressToAmountFunded;
+- mapping(address => uint256) public addressToAmountFunded;
 设计原因：
-  支持 O(1) 时间复杂度查询用户资金
-  相比数组遍历更加节省 Gas
+- 支持 O(1) 时间复杂度查询用户资金
+- 相比数组遍历更加节省 Gas
   
 2️⃣ 最小出资限制（USD）
-集成 Chainlink Price Feed
-实现 ETH → USD 实时转换
+集成 Chainlink Price Feed实现 ETH → USD 实时转换
+
 设计目的：
-  避免 ETH 价格波动导致的资金不足问题
-  提升协议稳定性
+- 避免 ETH 价格波动导致的资金不足问题
+- 提升协议稳定性
 
 🔒 安全性设计
 使用 onlyOwner 限制提现权限
@@ -40,29 +39,26 @@ solidity
 避免不必要的外部调用
 
 🧪 测试
-
 测试框架：
-  Hardhat
-  Mocha
-  Chai
+- Hardhat
+- Mocha
+- Chai
   
 测试覆盖率
-  ✅ 90%+
+✅ 90%+
   
 核心测试用例
-
-  正常出资流程
-  小于最小金额 → revert
-  多用户出资
-  owner 提现
-  非 owner 提现失败
+- 正常出资流程
+- 小于最小金额 → revert
+- 多用户出资
+- owner 提现
+- 非 owner 提现失败
   
 🛠 技术栈
-
-Solidity
-Hardhat
-Ethers.js
-Chainlink
+- Solidity
+- Hardhat
+- Ethers.js
+- Chainlink
 
 ## 📌 项目总结
 使用 mapping 高效管理用户资金
