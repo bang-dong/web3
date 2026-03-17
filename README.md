@@ -14,6 +14,7 @@
              Contract Owner
                      ↑
 User（用户） → FundMe Contract → mapping(address => amount) → mint FT
+
                       ↓
              Chainlink Oracle
 
@@ -38,13 +39,17 @@ solidity
 避免不必要的外部调用
 
 🧪 测试
+
 测试框架：
   Hardhat
   Mocha
   Chai
+  
 测试覆盖率
   ✅ 90%+
+  
 核心测试用例
+
   正常出资流程
   小于最小金额 → revert
   多用户出资
@@ -52,6 +57,7 @@ solidity
   非 owner 提现失败
   
 🛠 技术栈
+
 Solidity
 Hardhat
 Ethers.js
