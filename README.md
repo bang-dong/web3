@@ -11,13 +11,14 @@
 - 完整单元测试覆盖
 
 ## 🏗 系统架构
-             Contract Owner
+              Contract Owner
                     ↑
 User（用户） → FundMe Contract → mapping(address => amount) → mint FT
-                        ↓
-                  Chainlink Oracle
+                      ↓
+             Chainlink Oracle
 
 ## 🔑 核心合约设计
+
 1️⃣ 资金记录机制
 ```solidity
 mapping(address => uint256) public addressToAmountFunded;
@@ -52,6 +53,7 @@ Solidity
 Hardhat
 Ethers.js
 Chainlink
+
 
 ## 📌 项目总结
 使用 mapping 高效管理用户资金
