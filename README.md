@@ -12,8 +12,9 @@
 ## 🏗 系统架构  
             Contract Owner
                      ↑
+                     
 User（用户） → FundMe Contract → mapping(address => amount) → mint FT
-
+            
                      ↓
              Chainlink Oracle
 
@@ -46,19 +47,32 @@ solidity
   
 测试覆盖率
 ✅ 90%+
-  
-核心测试用例
+
+攻击合约测试用例
+- 重入攻击测试
+- 权限测试
+- 精度攻击测试
+- DoS 攻击测试
+- 跨合约一致性测试
+
+单元测试用例
 - 正常出资流程
 - 小于最小金额 → revert
+- 超过众筹时间出资 → revert
 - 多用户出资
-- owner 提现
-- 非 owner 提现失败
+- 满足众筹条件，owner 提现
+- 满足众筹条件，非 owner 提现失败
+- 未满足众筹条件，退款成功
+- 众筹完成，用户根据自己的资金金额换取相应兼容性代币成功
+- 众筹未完成，用户根据自己的资金金额换取相应兼容性代币 → revert
+- 众筹完成，用户超出自己的资金金额换取相应兼容性代币 → revert
   
 🛠 技术栈
 - Solidity
 - Hardhat
 - Ethers.js
 - Chainlink
+- ERC20
 
 ## 📌 项目总结
 使用 mapping 高效管理用户资金
